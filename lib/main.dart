@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quiz/question.dart';
-import 'package:quiz/awnser.dart';
+import 'package:quiz/quiz.dart';
+import 'package:quiz/quizResult.dart';
 
 main() {
   runApp(QuizApp());
@@ -25,7 +25,6 @@ class _QuizAppState extends State<QuizApp> {
   int _selectedQuestion = 0;
   bool _finished = false;
 
-  // EVENT WHEN ANWSER QUESTIONS
   void _respond() {
     if ((_selectedQuestion + 1) < questions.length) {
       setState(() {
@@ -41,24 +40,12 @@ class _QuizAppState extends State<QuizApp> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> awnsers = questions[_selectedQuestion].cast()['awnsers'];
-
-    // BODY QUESTIONS
-    Widget bodyQuestion = Column(children: [
-      Question(questions[_selectedQuestion]['question'].toString()),
-      ...awnsers.map((e) => Awnser(e, _respond)),
-    ]);
-
-    // BODY FINISHED
-    Widget bodyFinished = const Center(
-      child: Text("Finished", style: TextStyle(fontSize: 28)),
-    );
-
-    // APP
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Quiz')),
-        body: _finished ? bodyFinished : bodyQuestion,
+        body: _finished
+            ? const QuizFinished(text: "Finished")
+            : Quiz(selectedQuestion: _selectedQuestion, listQuestionsAndAwnsers: questions, onRespond: _respond),
       ),
     );
   }

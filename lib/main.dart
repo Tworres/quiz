@@ -9,42 +9,62 @@ main() {
 const List<Map<String, Object>> questions = [
   {
     "question": "question 1",
-    "awnsers": ['awnser 1', 'awnser 2', 'awnser 3'],
+    "awnsers": [
+      {"text": 'awnser 1', "points": "1"},
+      {"text": 'awnser 2', "points": "2"},
+      {"text": 'awnser 3', "points": "3"},
+    ],
   },
   {
     "question": "question 2",
-    "awnsers": ['awnser 3', 'awnser 4', 'awnser 5'],
+    "awnsers": [
+      {"text": 'awnser 3', "points": "1"},
+      {"text": 'awnser 4', "points": "2"},
+      {"text": 'awnser 5', "points": "3"},
+    ],
   },
   {
     "question": "question 3",
-    "awnsers": ['awnser 4', 'awnser 5', 'awnser 6']
+    "awnsers": [
+      {"text": 'awnser 4', "points": "1"},
+      {"text": 'awnser 5', "points": "2"},
+      {"text": 'awnser 6', "points": "3"},
+    ]
   },
 ];
 
 class _QuizAppState extends State<QuizApp> {
   int _selectedQuestion = 0;
+  int _pointsTotal = 0;
   bool _finished = false;
 
-  void _respond() {
-    if ((_selectedQuestion + 1) < questions.length) {
-      setState(() {
+  void _respond(int points) {
+    setState(() {
+      if ((_selectedQuestion + 1) < questions.length) {
         _selectedQuestion++;
-      });
-    } else {
-      setState(() {
+      } else {
         _finished = true;
-      });
-    }
+      }
+      _pointsTotal += points;
+    });
     print(_selectedQuestion);
+  }
+
+  void _resetQuiz() {
+    setState(() {
+      _selectedQuestion = 0;
+      _pointsTotal = 0;
+      _finished = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: const Text('Quiz')),
+        appBar: AppBar(title: const Text('Quiz'), centerTitle: true),
         body: _finished
-            ? const QuizFinished(text: "Finished")
+            ? QuizFinished(points: _pointsTotal, onReset: _resetQuiz)
             : Quiz(selectedQuestion: _selectedQuestion, listQuestionsAndAwnsers: questions, onRespond: _respond),
       ),
     );
